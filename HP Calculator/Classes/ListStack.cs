@@ -24,7 +24,7 @@ namespace HP_Calculator.Classes
         }
         public bool Isempty()
         {
-            if (stack.Count == 0)
+            if (stack.Count() == 0)
             {
                 return true;
             }
@@ -33,6 +33,5 @@ namespace HP_Calculator.Classes
                 return false;
             }
         }
-
     }
 }

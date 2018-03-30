@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace HP_Calculator.Classes
 {
-     class MyList<T>
+    class MyList<T>
     {
         private T item;
         private MyList<T> next;
+        public int count;
 
         public MyList(T item)
         {
@@ -18,18 +19,25 @@ namespace HP_Calculator.Classes
         public T GetItem(int index)
         {
             if (index == 0)
-           
+
                 return item;
             else
                 index = index - 1;
-                return next.GetItem(index);
+            return next.GetItem(index);
         }
 
+        public int Count()
+        {
+            return count;
+        }
 
         public void Add(T item)
         {
             if (next == null)
+            {
                 next = new MyList<T>(item);
+                count++;
+            }
             else
                 next.Add(item);
         }
@@ -38,6 +46,7 @@ namespace HP_Calculator.Classes
         {
             if (index == 0)
             {
+                count--;
                 next = null;
                 return item;
                 

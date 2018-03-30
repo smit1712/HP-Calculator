@@ -10,25 +10,26 @@ namespace HP_Calculator.Classes
     class ArrayStack<T> : Stack<T>,IStack<T>
     { 
 
-        T[] Array = new T[10];
+        T[] stack = new T[10];
 
 
         public void Push(T x)
         {
             top++;
-            Array[top] = x;
+            stack[top] = x;
         }
         public T Pop()
         {
-            T rpop = Array[top];
+            T rpop = stack[top];
             top--;
             return rpop;
  
         }
         public bool Isempty()
         {
-            if (top == -1)
+            if (stack.Count() == 0)
             {
+                
                 return true;
             }
             else
@@ -36,6 +37,5 @@ namespace HP_Calculator.Classes
                 return false;
             }
         }
-
     }
 }

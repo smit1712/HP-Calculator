@@ -81,7 +81,7 @@ namespace HP_Calculator
         }
         private void Submit_Click(object sender, EventArgs e)
         {
-            if (text != "")
+            if (text != ""&& text != "+" && text != "-" && text != "*" && text != "/")
             { 
             listbox.Items.Add(Convert.ToDecimal(text));
                 switch (selectedStack)
@@ -110,16 +110,18 @@ namespace HP_Calculator
             Buttoncount = Convert.ToInt32((((Control)sender).Tag));
             Function gfunc = new Function();
             input = gfunc.GetFunction(Buttoncount);
-            if (input != "(-)")
-            { 
-            text = text + input;
-            label.Text = text;
-            }
+
             int size;
             switch (input)
             {
                 case "/":
                     size = listbox.Items.Count;
+                    if (size < 2)
+                    {
+                        label.Text = null;
+                        input = null;
+                        break;
+                    }
                     listbox.Items.RemoveAt(size - 1);
                     listbox.Items.RemoveAt(size - 2);
                     decimal calc1 = Convert.ToDecimal(Calculate("/"));
@@ -138,11 +140,16 @@ namespace HP_Calculator
                             MLstack.Push(calc1);
                             break;
                     }                    
-                    label.Text = "";
+                    input = null;
                     text = "";
                     break;
                 case "*":
                     size = listbox.Items.Count;
+                    if (size < 2)
+                    {
+                        input = null;
+                        break;
+                    }
                     listbox.Items.RemoveAt(size - 1);
                     listbox.Items.RemoveAt(size - 2);
                     decimal calc2 = Convert.ToDecimal(Calculate("*"));
@@ -162,11 +169,16 @@ namespace HP_Calculator
                             break;
 
                     }
-                    label.Text = "";
+                    input = null;
                     text = "";
                     break;
                 case "-":
                     size = listbox.Items.Count;
+                    if (size < 2)
+                    {
+                        input = null;
+                        break;
+                    }
                     listbox.Items.RemoveAt(size - 1);
                     listbox.Items.RemoveAt(size - 2);
                     decimal calc3 = Convert.ToDecimal(Calculate("-"));
@@ -185,13 +197,21 @@ namespace HP_Calculator
                             MLstack.Push(calc3);
                             break;
                     }
-                    label.Text = "";
+                    input = null;
                     text = "";
                     break;
                 case "+":
                     size = listbox.Items.Count;
-                    listbox.Items.RemoveAt(size - 1);
-                    listbox.Items.RemoveAt(size - 2);
+                    if (size < 2)
+                    {
+                        input = null;
+                        break;
+                    }
+                    else
+                    {
+                        listbox.Items.RemoveAt(size - 1);
+                        listbox.Items.RemoveAt(size - 2);
+                    }
                     decimal calc4 = Convert.ToDecimal(Calculate("+"));
                     listbox.Items.Add(calc4);
                     switch (selectedStack)
@@ -208,7 +228,7 @@ namespace HP_Calculator
                             MLstack.Push(calc4);
                             break;
                     }
-                    label.Text = "";
+                    input = null;
                     text = "";
                     break;
                 case "(-)":
@@ -217,16 +237,21 @@ namespace HP_Calculator
 
                     break;
             }
-            
+            if (input != "(-)")
+            {
+                text = text + input;
+                label.Text = text;
+            }
+
         }
         private string Calculate(string operation)
         {
+            label.Text = null;
             decimal two = 1;
             decimal one = 2;
             switch (selectedStack)
             {
                 case "arraystack":
-
                      two = Astack.Pop();
                      one = Astack.Pop();
                     break;
@@ -324,12 +349,15 @@ namespace HP_Calculator
             {
                 case "arraystack":
                     selectedStack = "arraystack";
+                    listbox.Items.Clear();
                     break;
                 case "Liststack":
                     selectedStack = "Liststack";
+                    listbox.Items.Clear();
                     break;
                 case "MyListstack":
                     selectedStack = "MyListStack";
+                    listbox.Items.Clear();
                     break;
             }
         }

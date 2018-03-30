@@ -21,6 +21,4 @@ namespace HP_Calculator.Classes
         public int top = -1;
     }
     
-
-
 }
