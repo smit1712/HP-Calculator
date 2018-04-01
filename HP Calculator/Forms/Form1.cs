@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace HP_Calculator
 {
@@ -21,6 +22,7 @@ namespace HP_Calculator
         Label label = new Label();
         ListBox listbox = new ListBox();
         List<decimal> listboxlist = new List<decimal>();
+
         string input = "";
         string text = "";
         public Form1()
@@ -31,23 +33,26 @@ namespace HP_Calculator
             Submit_button();
             Lbox();
             Radiobutton();
+            
         }
         public void Buttons()
-        {            
+        {
+
             int count = 0;
-            Point Location = new Point(0, 100);
+            Point Location = new Point(0, 100);            
             foreach (Button Buttons in buttonarray)
             {
                 Function Bname = new Function();
-                Button button = new Button();                
-                button.Name = "Button"+count;
-                button.Text = Bname.GetFunction(count);
+                Button button = new Button();
+                button.Name = "Button" + count;
+                button.Text = Bname.GetFunction(Convert.ToString(count));
                 button.Height = 50;
                 button.Width = 50;
                 button.BackColor = Color.Gray;
                 button.ForeColor = Color.LightGray;
                 button.Location = Location;
                 button.Click += new EventHandler(Button_Click);
+                button.KeyDown += new KeyEventHandler(Form1_KeyDown);
                 Controls.Add(button);
                 button.Tag = count;
                 if (Location.X <= 125)
@@ -63,6 +68,85 @@ namespace HP_Calculator
                 count++;
             }
         }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            this.Focus();
+            Button Buttonpressed = new Button();
+            if (Convert.ToString(e.KeyData) == "Space")
+            {
+                Submitevent();
+            }
+            else
+            {
+                Buttonpressed.Tag = e.KeyData;
+
+                button_event(Buttonpressed);
+            }
+        }
+
+
+        private void Button_Click(object sender, EventArgs e)
+        {
+            button_event(sender);
+
+        }
+
+        private void button_event(object sender)
+        {
+            
+            string Buttoncount = Convert.ToString((((Control)sender).Tag));
+            Function gfunc = new Function();
+            input = gfunc.GetFunction(Convert.ToString(Buttoncount));
+
+            if (input == "(-)")
+            {
+                text = text + "-";
+                label.Text = text;
+                goto END;
+            }
+            if (input == "/" || input == "+" || input == "-" || input == "*")
+            {
+                int size;
+                size = listbox.Items.Count;
+                if (size < 2)
+                {
+                    label.Text = null;
+                    input = null;
+                    goto END;
+
+                }
+                listbox.Items.RemoveAt(size - 1);
+                listbox.Items.RemoveAt(size - 2);
+                decimal calc1 = Convert.ToDecimal(Calculate(input));
+                listbox.Items.Add(calc1);
+                switch (selectedStack)
+                {
+                    case "arraystack":
+
+                        Astack.Push(calc1);
+                        break;
+                    case "Liststack":
+
+                        Lstack.Push(calc1);
+                        break;
+                    case "MyListStack":
+                        MLstack.Push(calc1);
+                        break;
+                }
+                input = null;
+                text = "";
+            }
+            else
+            {
+                text = text + input;
+                label.Text = text;
+            }
+
+
+            END:;
+        }
+
         private void Submit_button()
         {
             Point Location = new Point(220, 30);
@@ -75,85 +159,48 @@ namespace HP_Calculator
             button.BackColor = Color.Gray;
             button.ForeColor = Color.LightGray;
             button.Location = Location;
-            button.Click += new EventHandler(Submit_Click);
-            Controls.Add(button);
+            button.MouseClick += new MouseEventHandler(Submit_Click);
+            button.KeyDown += new KeyEventHandler(Form1_KeyDown);
+            Controls.Add(button);            
         }
         private void Submit_Click(object sender, EventArgs e)
         {
-            if (text != ""&& text != "+" && text != "-" && text != "*" && text != "/")
-            { 
-            listbox.Items.Add(Convert.ToDecimal(text));
+            Submitevent();
+        }
+
+        private void Submitevent()
+        {
+            if (text != "" && text != "+" && text != "-" && text != "*" && text != "/")
+            {
+                listbox.Items.Add(Convert.ToDecimal(text));
                 switch (selectedStack)
                 {
                     case "arraystack":
-                         Astack.Push(Convert.ToDecimal(text));
+                        if (Astack == null)
+                        {
+                            Astack = new ArrayStack<decimal>();
+                        }
+                        Astack.Push(Convert.ToDecimal(text));
                         break;
                     case "Liststack":
+                        if (Lstack == null)
+                        {
+                            Lstack = new ListStack<decimal>();
+                        }
                         Lstack.Push(Convert.ToDecimal(text));
                         break;
                     case "MyListStack":
+                        if (MLstack == null)
+                        {
+                            MLstack = new MyListStack<decimal>();
+                        }
                         MLstack.Push(Convert.ToDecimal(text));
                         break;
+                }
 
+                text = "";
+                label.Text = "";
             }
-            text = "";
-            label.Text = "";
-             }
-        }
-
-        private void Button_Click(object sender, EventArgs e)
-        {
-            int Buttoncount;
-            Buttoncount = Convert.ToInt32((((Control)sender).Tag));
-            Function gfunc = new Function();
-            input = gfunc.GetFunction(Buttoncount);
-
-            if (input == "(-)")
-            {
-                text = text + "-";
-                label.Text = text;
-                goto END;
-            }
-
-            if (input == "/" || input == "+" || input == "-" || input == "*") { 
-            int size;
-            size = listbox.Items.Count;
-            if (size < 2)
-            {
-                label.Text = null;
-                input = null;
-                    goto END;
-                
-            }           
-            listbox.Items.RemoveAt(size - 1);
-            listbox.Items.RemoveAt(size - 2);
-            decimal calc1 = Convert.ToDecimal(Calculate(input));
-            listbox.Items.Add(calc1);
-            switch (selectedStack)
-            {
-                case "arraystack":
-
-                    Astack.Push(calc1);
-                    break;
-                case "Liststack":
-
-                    Lstack.Push(calc1);
-                    break;
-                case "MyListStack":
-                    MLstack.Push(calc1);
-                    break;
-            }
-            input = null;
-            text = "";
-            }
-            else
-            {
-                text = text + input;
-                label.Text = text;
-            }
-
-
-            END:;
         }
         private string Calculate(string operation)
         {
@@ -206,6 +253,7 @@ namespace HP_Calculator
             label.Location = Location;
             label.BackColor = Color.Black;
             label.ForeColor = Color.White;
+            label.KeyDown += new KeyEventHandler(Form1_KeyDown);
             Controls.Add(label);
         }
         private void Lbox()
@@ -216,7 +264,8 @@ namespace HP_Calculator
             listbox.Location = Location;
             listbox.BackColor = Color.Beige;
             listbox.ForeColor = Color.Black;
-            
+            listbox.KeyDown += new KeyEventHandler(Form1_KeyDown);
+
             Controls.Add(listbox);
         }
         private void Radiobutton()
@@ -229,20 +278,27 @@ namespace HP_Calculator
                 switch (count)
                 {
                     case 1:
-                        RadioButton.Text = "arraystack";
+                        RadioButton.Text = "arraystack";                        
                         break;
                     case 2:
                         RadioButton.Text = "Liststack";
+                        RadioButton.Select();
                         break;
                     case 3:
                         RadioButton.Text = "MyListstack";
+
                         break;
+                }
+                if (count ==1)
+                {
+                    RadioButton.Checked=true;
                 }
                 RadioButton.AutoSize = true;
                 RadioButton.ForeColor = Color.Black;
                 Location.Y = Location.Y + 15;
                 RadioButton.Location = Location;
                 RadioButton.Click += new EventHandler(SelectRadiobutton);
+                RadioButton.KeyDown += new KeyEventHandler(Form1_KeyDown);
                 Controls.Add(RadioButton);
                 count++;
             }
@@ -255,14 +311,20 @@ namespace HP_Calculator
                 case "arraystack":
                     selectedStack = "arraystack";
                     listbox.Items.Clear();
+                    MLstack = null;
+                    Lstack = null;
                     break;
                 case "Liststack":
                     selectedStack = "Liststack";
                     listbox.Items.Clear();
+                    MLstack = null;
+                    Astack = null;
                     break;
                 case "MyListstack":
                     selectedStack = "MyListStack";
-                         listbox.Items.Clear();
+                    listbox.Items.Clear();
+                    Astack = null;
+                    Lstack = null;
                     break;
             }
         }
