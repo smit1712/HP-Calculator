@@ -2,17 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace HP_Calculator.Classes
 {
     class ArrayStack<T> : Stack<T>,IStack<T>
     { 
-
         T[] stack = new T[10];
-
-
         public void Push(T x)
         {
             top++;
@@ -28,8 +24,7 @@ namespace HP_Calculator.Classes
         public bool Isempty()
         {
             if (stack.Count() == 0)
-            {
-                
+            {                
                 return true;
             }
             else

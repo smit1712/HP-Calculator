@@ -11,12 +11,10 @@ namespace HP_Calculator.Classes
         void Push(T x);
         T Pop();
         bool Isempty();
-
-
     }
 
 
-    public  abstract class Stack<T>
+    public abstract class Stack<T>
     {
         public int top = -1;
     }

@@ -38,10 +38,10 @@ namespace HP_Calculator
             Point Location = new Point(0, 100);
             foreach (Button Buttons in buttonarray)
             {
-                ButtonName Bname = new ButtonName();
+                Function Bname = new Function();
                 Button button = new Button();                
                 button.Name = "Button"+count;
-                button.Text = Bname.GetButtonName(count);
+                button.Text = Bname.GetFunction(count);
                 button.Height = 50;
                 button.Width = 50;
                 button.BackColor = Color.Gray;
@@ -59,7 +59,6 @@ namespace HP_Calculator
                     Location.X = 0;
                     Location.Y = Location.Y + 60;
                 }
-
                 buttonarray[count] = button;
                 count++;
             }
@@ -87,8 +86,8 @@ namespace HP_Calculator
                 switch (selectedStack)
                 {
                     case "arraystack":
-                     Astack.Push(Convert.ToDecimal(text));
-                    break;
+                         Astack.Push(Convert.ToDecimal(text));
+                        break;
                     case "Liststack":
                         Lstack.Push(Convert.ToDecimal(text));
                         break;
@@ -102,8 +101,6 @@ namespace HP_Calculator
              }
         }
 
-
-
         private void Button_Click(object sender, EventArgs e)
         {
             int Buttoncount;
@@ -111,144 +108,59 @@ namespace HP_Calculator
             Function gfunc = new Function();
             input = gfunc.GetFunction(Buttoncount);
 
-            int size;
-            switch (input)
+            if (input == "(-)")
             {
-                case "/":
-                    size = listbox.Items.Count;
-                    if (size < 2)
-                    {
-                        label.Text = null;
-                        input = null;
-                        break;
-                    }
-                    listbox.Items.RemoveAt(size - 1);
-                    listbox.Items.RemoveAt(size - 2);
-                    decimal calc1 = Convert.ToDecimal(Calculate("/"));
-                    listbox.Items.Add(calc1);
-                    switch (selectedStack)
-                    {
-                        case "arraystack":
+                text = text + "-";
+                label.Text = text;
+                goto END;
+            }
 
-                            Astack.Push(calc1);
-                            break;
-                        case "Liststack":
+            if (input == "/" || input == "+" || input == "-" || input == "*") { 
+            int size;
+            size = listbox.Items.Count;
+            if (size < 2)
+            {
+                label.Text = null;
+                input = null;
+                    goto END;
+                
+            }           
+            listbox.Items.RemoveAt(size - 1);
+            listbox.Items.RemoveAt(size - 2);
+            decimal calc1 = Convert.ToDecimal(Calculate(input));
+            listbox.Items.Add(calc1);
+            switch (selectedStack)
+            {
+                case "arraystack":
 
-                            Lstack.Push(calc1);
-                            break;
-                        case "MyListStack":
-                            MLstack.Push(calc1);
-                            break;
-                    }                    
-                    input = null;
-                    text = "";
+                    Astack.Push(calc1);
                     break;
-                case "*":
-                    size = listbox.Items.Count;
-                    if (size < 2)
-                    {
-                        input = null;
-                        break;
-                    }
-                    listbox.Items.RemoveAt(size - 1);
-                    listbox.Items.RemoveAt(size - 2);
-                    decimal calc2 = Convert.ToDecimal(Calculate("*"));
-                    listbox.Items.Add(calc2);
-                    switch (selectedStack)
-                    {
-                        case "arraystack":
+                case "Liststack":
 
-                            Astack.Push(calc2);
-                            break;
-                        case "Liststack":
-
-                            Lstack.Push(calc2);
-                            break;
-                        case "MyListStack":
-                            MLstack.Push(calc2);
-                            break;
-
-                    }
-                    input = null;
-                    text = "";
+                    Lstack.Push(calc1);
                     break;
-                case "-":
-                    size = listbox.Items.Count;
-                    if (size < 2)
-                    {
-                        input = null;
-                        break;
-                    }
-                    listbox.Items.RemoveAt(size - 1);
-                    listbox.Items.RemoveAt(size - 2);
-                    decimal calc3 = Convert.ToDecimal(Calculate("-"));
-                    listbox.Items.Add(calc3);
-                    switch (selectedStack)
-                    {
-                        case "arraystack":
-
-                            Astack.Push(calc3);
-                            break;
-                        case "Liststack":
-
-                            Lstack.Push(calc3);
-                            break;
-                        case "MyListStack":
-                            MLstack.Push(calc3);
-                            break;
-                    }
-                    input = null;
-                    text = "";
-                    break;
-                case "+":
-                    size = listbox.Items.Count;
-                    if (size < 2)
-                    {
-                        input = null;
-                        break;
-                    }
-                    else
-                    {
-                        listbox.Items.RemoveAt(size - 1);
-                        listbox.Items.RemoveAt(size - 2);
-                    }
-                    decimal calc4 = Convert.ToDecimal(Calculate("+"));
-                    listbox.Items.Add(calc4);
-                    switch (selectedStack)
-                    {
-                        case "arraystack":
-
-                            Astack.Push(calc4);
-                            break;
-                        case "Liststack":
-
-                            Lstack.Push(calc4);
-                            break;
-                        case "MyListStack":
-                            MLstack.Push(calc4);
-                            break;
-                    }
-                    input = null;
-                    text = "";
-                    break;
-                case "(-)":
-                    text = "-" + text;
-                    label.Text = text;
-
+                case "MyListStack":
+                    MLstack.Push(calc1);
                     break;
             }
-            if (input != "(-)")
+            input = null;
+            text = "";
+            }
+            else
             {
                 text = text + input;
                 label.Text = text;
             }
 
+
+            END:;
         }
         private string Calculate(string operation)
         {
             label.Text = null;
             decimal two = 1;
             decimal one = 2;
+            decimal awnser;
             switch (selectedStack)
             {
                 case "arraystack":
@@ -266,22 +178,20 @@ namespace HP_Calculator
                     one = MLstack.Pop();
                     break;
             }
-
-
             switch (operation)
             {
                 case "/":
-                    decimal tree = one /  two;
-                    return Convert.ToString(tree);
+                     awnser = one /  two;
+                    return Convert.ToString(awnser);
                 case "*":
-                    decimal four = one * two;
-                    return Convert.ToString(four); 
+                     awnser = one * two;
+                    return Convert.ToString(awnser); 
                 case "-":
-                    decimal five = one -  two;
-                    return Convert.ToString(five); 
+                     awnser = one -  two;
+                    return Convert.ToString(awnser); 
                 case "+":
-                    decimal six = one +  two;
-                    return Convert.ToString(six); 
+                     awnser = one +  two;
+                    return Convert.ToString(awnser); 
             }
             return null;        
         }
@@ -311,41 +221,36 @@ namespace HP_Calculator
         }
         private void Radiobutton()
         {
-            
-            
-            RadioButton arraystack = new RadioButton();
-            arraystack.Text = "arraystack";
-            arraystack.AutoSize = true;
-            arraystack.BackColor = Color.Beige;
-            arraystack.ForeColor = Color.Black;
-            arraystack.Location = new Point(400, 300);
-            arraystack.Click += new EventHandler(SelectRadiobutton);
-            Controls.Add(arraystack);
-
-            RadioButton Liststack = new RadioButton();
-            Liststack.Text = "Liststack";
-            Liststack.AutoSize = true;
-            Liststack.BackColor = Color.Beige;
-            Liststack.ForeColor = Color.Black;
-            Liststack.Location = new Point(400, 315);
-            Liststack.Click += new EventHandler(SelectRadiobutton);
-            Controls.Add(Liststack);
-
-            RadioButton MyListstack = new RadioButton();
-            MyListstack.Text = "MyListstack";
-            MyListstack.AutoSize = true;
-            MyListstack.BackColor = Color.Beige;
-            MyListstack.ForeColor = Color.Black;
-            MyListstack.Location = new Point(400, 330);
-            MyListstack.Click += new EventHandler(SelectRadiobutton);
-            Controls.Add(MyListstack);
-
-
+            Point Location = new Point(400, 300);
+            int count = 1;
+            while (count <= 3)
+            {
+                RadioButton RadioButton = new RadioButton();
+                switch (count)
+                {
+                    case 1:
+                        RadioButton.Text = "arraystack";
+                        break;
+                    case 2:
+                        RadioButton.Text = "Liststack";
+                        break;
+                    case 3:
+                        RadioButton.Text = "MyListstack";
+                        break;
+                }
+                RadioButton.AutoSize = true;
+                RadioButton.ForeColor = Color.Black;
+                Location.Y = Location.Y + 15;
+                RadioButton.Location = Location;
+                RadioButton.Click += new EventHandler(SelectRadiobutton);
+                Controls.Add(RadioButton);
+                count++;
+            }
         }
 
         private void SelectRadiobutton(object sender, EventArgs e)
         {
-            switch (((System.Windows.Forms.ButtonBase)sender).Text)
+            switch (((Control)sender).Text)
             {
                 case "arraystack":
                     selectedStack = "arraystack";
@@ -357,7 +262,7 @@ namespace HP_Calculator
                     break;
                 case "MyListstack":
                     selectedStack = "MyListStack";
-                    listbox.Items.Clear();
+                         listbox.Items.Clear();
                     break;
             }
         }

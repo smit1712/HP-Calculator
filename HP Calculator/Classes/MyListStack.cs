@@ -9,8 +9,7 @@ namespace HP_Calculator.Classes
     class MyListStack<T> : Stack<T>, IStack<T>
     {
         
-        MyList<T> stack = new MyList<T>(default(T));
-        
+        MyList<T> stack = new MyList<T>(default(T));      
 
         public void Push(T x)
         {

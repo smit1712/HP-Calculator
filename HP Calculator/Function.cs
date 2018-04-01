@@ -9,7 +9,6 @@ namespace HP_Calculator
     class Function
     {
         private string function;
-        public Function() { }
         public string GetFunction(int tag) { 
 
         

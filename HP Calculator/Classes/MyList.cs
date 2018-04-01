@@ -48,13 +48,11 @@ namespace HP_Calculator.Classes
             {
                 count--;
                 next = null;
-                return item;
-                
+                return item;               
             }
             else
                 index = index - 1;
             return next.remove(index);
-
         }
 
 
