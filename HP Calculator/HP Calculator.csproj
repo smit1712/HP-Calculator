@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ButtonName.cs" />
     <Compile Include="Classes\ArrayStack.cs" />
     <Compile Include="Classes\ListStack.cs" />
     <Compile Include="Classes\MyList.cs" />

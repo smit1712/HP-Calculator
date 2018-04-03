@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HP_Calculator
-{
+{/// <summary>
+/// vertaald de de knop naar de bij behoorende functie
+/// </summary>
     class Function
     {
         private string function;
-        public string GetFunction(string tag) { 
-
-        
+        public string GetFunction(string tag)
+        {         
             switch (tag)
             {
                 case "0":
@@ -91,10 +92,8 @@ namespace HP_Calculator
                 case "Add":
                     function = "+";
                     break;
-
             }
             return function;
-
         }
     }
 }

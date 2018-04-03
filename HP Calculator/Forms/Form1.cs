@@ -14,16 +14,46 @@ namespace HP_Calculator
 {
     public partial class Form1 : Form
     {
-        string selectedStack = "arraystack";
+        
+        /// <summary>
+        /// Array waar de knopping in worden bewaard
+        /// </summary>
         Button[] buttonarray = new Button[16];
+        /// <summary>
+        /// object van ArrayStack decimal
+        /// </summary>
         ArrayStack<decimal> Astack = new ArrayStack<decimal>();
+        /// <summary>
+        /// object van ListStack decimal
+        /// </summary>
         ListStack<decimal> Lstack = new ListStack<decimal>();
+        /// <summary>
+        /// object van MyListStack decimal
+        /// </summary>
         MyListStack<decimal> MLstack = new MyListStack<decimal>();
+        /// <summary>
+        /// object waar het getal gemaakt wordt
+        /// </summary>
         Label label = new Label();
+        /// <summary>
+        /// object waar de stacks in weergegeven worden
+        /// </summary>
         ListBox listbox = new ListBox();
+        /// <summary>
+        /// datasource list die bij de listbox hoort
+        /// </summary>
         List<decimal> listboxlist = new List<decimal>();
-
+        /// <summary>
+        /// string waarmee bepaald wordt welke stack geselecteerd is
+        /// </summary>
+        string selectedStack = "arraystack";
+        /// <summary>
+        /// string die een waarde van de label naar de listbox brengt
+        /// </summary>
         string input = "";
+        /// <summary>
+        /// string met waarde in de label
+        /// </summary>
         string text = "";
         public Form1()
         {
@@ -32,12 +62,13 @@ namespace HP_Calculator
             Buttons();
             Submit_button();
             Lbox();
-            Radiobutton();
-            
+            Radiobutton();            
         }
+        /// <summary>
+        /// Functie die 16 knoppen aanmaakt voor de numerice waarden en operaties 
+        /// </summary>
         public void Buttons()
         {
-
             int count = 0;
             Point Location = new Point(0, 100);            
             foreach (Button Buttons in buttonarray)
@@ -68,7 +99,11 @@ namespace HP_Calculator
                 count++;
             }
         }
-
+        /// <summary>
+        /// event handler voor toetsenbord
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             this.Focus();
@@ -81,20 +116,26 @@ namespace HP_Calculator
             {
                 Buttonpressed.Tag = e.KeyData;
 
-                button_event(Buttonpressed);
+                Button_event(Buttonpressed);
             }
         }
 
-
+        /// <summary>
+        /// event handler voor muis click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, EventArgs e)
         {
-            button_event(sender);
-
+            Button_event(sender);
         }
-
-        private void button_event(object sender)
-        {
-            
+        /// <summary>
+        /// functie die de operatie uitvoord of getallen in de label zet
+        /// </summary>
+        /// <param name="sender"></param>
+        private void Button_event(object sender)
+        {       
+            ///vertaald button.tag naar de bij behorende input
             string Buttoncount = Convert.ToString((((Control)sender).Tag));
             Function gfunc = new Function();
             input = gfunc.GetFunction(Convert.ToString(Buttoncount));
@@ -104,7 +145,7 @@ namespace HP_Calculator
                 text = text + "-";
                 label.Text = text;
                 goto END;
-            }
+            }            
             if (input == "/" || input == "+" || input == "-" || input == "*")
             {
                 int size;
@@ -142,11 +183,11 @@ namespace HP_Calculator
                 text = text + input;
                 label.Text = text;
             }
-
-
             END:;
         }
-
+        /// <summary>
+        /// functie die de submit knop aanmaakt
+        /// </summary>
         private void Submit_button()
         {
             Point Location = new Point(220, 30);
@@ -163,11 +204,20 @@ namespace HP_Calculator
             button.KeyDown += new KeyEventHandler(Form1_KeyDown);
             Controls.Add(button);            
         }
+
+        /// <summary>
+        /// eventhandler voor de sumbit button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Submit_Click(object sender, EventArgs e)
         {
             Submitevent();
         }
-
+        /// <summary>
+        /// functie die de text in de label verplaatst naar de listbox en de geselecteerde stack
+        /// daarna wordt de label weer geleegd 
+        /// </summary>
         private void Submitevent()
         {
             if (text != "" && text != "+" && text != "-" && text != "*" && text != "/")
@@ -197,11 +247,15 @@ namespace HP_Calculator
                         MLstack.Push(Convert.ToDecimal(text));
                         break;
                 }
-
-                text = "";
-                label.Text = "";
+            text = "";
+            label.Text = "";
             }
         }
+        /// <summary>
+        /// functie die twee getallen uit de stack haald en juist operatie uitvoord en het antwoord terug op de stack zet 
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <returns></returns>
         private string Calculate(string operation)
         {
             label.Text = null;
@@ -225,24 +279,35 @@ namespace HP_Calculator
                     one = MLstack.Pop();
                     break;
             }
-            switch (operation)
+            try
             {
-                case "/":
-                     awnser = one /  two;
-                    return Convert.ToString(awnser);
-                case "*":
-                     awnser = one * two;
-                    return Convert.ToString(awnser); 
-                case "-":
-                     awnser = one -  two;
-                    return Convert.ToString(awnser); 
-                case "+":
-                     awnser = one +  two;
-                    return Convert.ToString(awnser); 
+                switch (operation)
+                {
+                    case "/":
+                        awnser = one / two;
+                        return Convert.ToString(awnser);
+                    case "*":
+                        awnser = one * two;
+                        return Convert.ToString(awnser);
+                    case "-":
+                        awnser = one - two;
+                        return Convert.ToString(awnser);
+                    case "+":
+                        awnser = one + two;
+                        return Convert.ToString(awnser);
+                }
+            }
+             catch (System.DivideByZeroException e)
+            {
+                listbox.Items.Remove(0);
+                MessageBox.Show("Tried to devide by zero");
+                return null;
             }
             return null;        
         }
-
+        /// <summary>
+        /// functie die een label aanmaakt waarin het getal gemaakt kan worden
+        /// </summary>
         private void Label()
         {
             Point Location = new Point(0, 100);           
@@ -256,6 +321,9 @@ namespace HP_Calculator
             label.KeyDown += new KeyEventHandler(Form1_KeyDown);
             Controls.Add(label);
         }
+        /// <summary>
+        /// functie die een listbox aanmaakt die de stack vertegenwoordigt 
+        /// </summary>
         private void Lbox()
         {
             Point Location = new Point(250, 60);
@@ -265,9 +333,11 @@ namespace HP_Calculator
             listbox.BackColor = Color.Beige;
             listbox.ForeColor = Color.Black;
             listbox.KeyDown += new KeyEventHandler(Form1_KeyDown);
-
             Controls.Add(listbox);
         }
+        /// <summary>
+        /// functie die 3 radiobuttons aanmaakt uit de verschillende stack typen te kiezen
+        /// </summary>
         private void Radiobutton()
         {
             Point Location = new Point(400, 300);
@@ -303,7 +373,11 @@ namespace HP_Calculator
                 count++;
             }
         }
-
+        /// <summary>
+        /// event handler de geselecteerde stack laad en de andere stacks leeg maakt.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SelectRadiobutton(object sender, EventArgs e)
         {
             switch (((Control)sender).Text)
